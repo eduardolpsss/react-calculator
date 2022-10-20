@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import './Calculator.css';
 
-import Button from "../fonts/components/Button";
-import Display from "./Display";
+import Button from "./Components/Button";
+import Display from "./Components/Display";
 
 // Defining calculator initial Values
 const initialState = {
@@ -35,17 +35,64 @@ export default class Calculator extends Component {
 
     // Set calculator operation based on the digit pressed
     setOperation(operation){
-        console.log(operation)
+        if (this.state.current === 0) {
+            this.setState({operation, current: 1, clearDisplay: true})
+        } else {
+            // Defining functionality of the '=' in the calculator
+            const equals = operation === '='
+            // Instantiating a variable to store the current operation (in case there is more than one operation)
+            const currentOperation = this.state.operation
+
+            const values = [...this.state.values]
+
+            try {
+                // Using the eval function to work with operations
+                values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`)
+                if (isNaN(values[0]) || !isFinite(values[0])) {
+                    this.clearMemory()                    
+                    return
+                }
+            } catch (e) {
+                values[0] = this.state.values[0]
+            }
+
+            values[1] = 0
+
+            this.setState({
+                displayValue: values[0],
+                operation: equals ? null : operation,
+                current: equals ? 0 : 1,
+                clearDisplay: !equals,
+                values
+
+            })
+
+        }
     }
 
     // Add a digit to compose the operation
     addDigit(number){
         // Checking for a "." in the calculator display, preventing entry of more than one per value
-        // if (n === '.' && this.state.displayValue.includes('.')) {
-        //     return 
-        // }
+        if (number === '.' && this.state.displayValue.includes('.')) {
+            return 
+        }
 
-        const clearDisplay = this.state.displayValue === '0'
+        // Creating rules for the display wipe button
+        const clearDisplay = this.state.displayValue === '0' || this.state.clearDisplay
+        const currentValue = clearDisplay ? '' : this.state.displayValue
+        const displayValue = currentValue + number
+
+        this.setState({displayValue, clearDisplay: false})
+
+        // Passing typed values (string) to the float type and storing in the array values
+        if(number !== '.'){
+            const i = this.state.current
+            const newValue = parseFloat(displayValue)
+            const values = [...this.state.values]
+            values[i] = newValue
+            this.setState({values})
+            console.log(values)
+        }
     }
 
 
