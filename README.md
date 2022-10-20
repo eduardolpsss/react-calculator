@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# reactCalculator
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/64506852/197049391-f4dc8e0f-1e44-45f6-ba3d-b8d5dc28789b.png"/>
+</div>
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
